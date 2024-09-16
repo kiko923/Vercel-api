@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json()); // 解析 JSON 格式的请求体
+app.use(express.urlencoded({ extended: true })); // 解析 URL 编码的数据
+
 function calculateChecksum(idNumber) {
   const coefficients = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
   const checksumCharacters = '10X98765432';
@@ -88,10 +91,23 @@ function processId(name, sfz, xingbie) {
   return results.join('<br>');
 }
 
-app.get('/api/id_process', (req, res) => {
-  const name = req.query.name;
-  const sfz = req.query.sfz;
-  const xingbie = req.query.xb;
+// 处理 GET 和 POST 请求
+app.all('/api/id_process', (req, res) => {
+  let name, sfz, xingbie;
+
+  // 处理 GET 请求的参数
+  if (req.method === 'GET') {
+    name = req.query.name;
+    sfz = req.query.sfz;
+    xingbie = req.query.xb;
+  }
+
+  // 处理 POST 请求的参数
+  if (req.method === 'POST') {
+    name = req.body.name;
+    sfz = req.body.sfz;
+    xingbie = req.body.xb;
+  }
 
   if (!name || !sfz || !xingbie) {
     res.status(400).send('缺少参数');
