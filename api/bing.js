@@ -24,9 +24,9 @@ export default async function handler(req, res) {
         if (req.query.type === 'json') {
             // 返回图片URL作为JSON响应
             res.status(200).json({
-                code: 200,
-                mkt: mkt,
-                imageUrl: imageUrlWithoutParams
+                code: 200,  // HTTP 状态码
+                mkt: mkt,   // 返回所使用的区域代码
+                imageUrl: imageUrlWithoutParams  // 图片 URL
             });
         } else {
             // 重定向至图片地址
@@ -35,6 +35,7 @@ export default async function handler(req, res) {
     } catch (error) {
         // 错误处理
         res.status(500).json({
+            code: 500,
             error: '无法获取必应壁纸'
         });
     }
