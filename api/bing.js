@@ -1,6 +1,12 @@
 export default async function handler(req, res) {
+    // 检查是否传入 `cn=1` 或 `cn=true`
+    const isCN = req.query.cn === '1' || req.query.cn === 'true';
+
+    // 根据 `cn` 参数决定 `mkt` 的值
+    const mkt = isCN ? 'zh-CN' : 'en-US';
+
     // 必应壁纸API URL
-    const apiUrl = "https://bing.com/HPImageArchive.aspx?format=js&mkt=en-US&idx=0&n=1&uhd=1&uhdwidth=3840&uhdheight=2160";
+    const apiUrl = `https://bing.com/HPImageArchive.aspx?format=js&mkt=${mkt}&idx=0&n=1&uhd=1&uhdwidth=3840&uhdheight=2160`;
 
     try {
         // 使用 fetch 获取API响应
