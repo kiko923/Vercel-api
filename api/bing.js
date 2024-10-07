@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
     // 必应壁纸API URL
-    const apiUrl = "https://bing.com/HPImageArchive.aspx?format=js&mkt=zh-CN&idx=0&n=1&uhd=1&uhdwidth=3840&uhdheight=2160";
+    const apiUrl = "https://bing.com/HPImageArchive.aspx?format=js&mkt=en-US&idx=0&n=1&uhd=1&uhdwidth=3840&uhdheight=2160";
 
     try {
         // 使用 fetch 获取API响应
