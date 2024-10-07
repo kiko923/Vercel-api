@@ -14,10 +14,16 @@ export default async function handler(req, res) {
         // 使用 split 去掉 URL 中的参数部分
         const imageUrlWithoutParams = imageUrl.split('&')[0];
 
-        // 返回图片URL作为JSON响应
-        res.status(200).json({
-            imageUrl: imageUrlWithoutParams
-        });
+        // 检查请求参数是否包含 `type=json`
+        if (req.query.type === 'json') {
+            // 返回图片URL作为JSON响应
+            res.status(200).json({
+                imageUrl: imageUrlWithoutParams
+            });
+        } else {
+            // 重定向至图片地址
+            res.redirect(imageUrlWithoutParams);
+        }
     } catch (error) {
         // 错误处理
         res.status(500).json({
