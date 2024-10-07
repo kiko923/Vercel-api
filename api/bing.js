@@ -24,6 +24,8 @@ export default async function handler(req, res) {
         if (req.query.type === 'json') {
             // 返回图片URL作为JSON响应
             res.status(200).json({
+                code: 200,
+                mkt: mkt,
                 imageUrl: imageUrlWithoutParams
             });
         } else {
