@@ -29,8 +29,8 @@ export default async function handler(req, res) {
                 imageUrl: imageUrlWithoutParams  // 图片 URL
             });
         } else {
-            // 重定向至图片地址
-            res.redirect(imageUrlWithoutParams);
+            // 302重定向至图片地址
+            res.redirect(302, imageUrlWithoutParams);
         }
     } catch (error) {
         // 错误处理
