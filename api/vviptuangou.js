@@ -1,19 +1,17 @@
-addEventListener('fetch', event => {
-  event.respondWith(handleVviptuangouRequest(event.request));
-});
+export default async function handler(req, res) {
+  console.log('Request received:', req.url);
 
-async function handleVviptuangouRequest(request) {
-  console.log('Request received:', request.url);
-
-  if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+  // 仅允许 POST 请求
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method not allowed');
   }
 
   try {
-    const formData = await request.formData();
+    // 从请求中解析 formData
+    const formData = await req.formData(); // Vercel目前不支持formData直接使用, 需要处理multipart/form-data
     const file = formData.get('image'); // 使用 'image' 字段名
     if (!file) {
-      return new Response('No file uploaded', { status: 400 });
+      return res.status(400).send('No file uploaded');
     }
 
     const newFormData = new FormData();
@@ -58,21 +56,15 @@ async function handleVviptuangouRequest(request) {
       if (jsonResponse.status === 1 && jsonResponse.imgurl) {
         // 根据 imgurl 构建正确的图片链接
         const correctImageUrl = `https://assets.vviptuangou.com/${jsonResponse.imgurl}`;
-        return new Response(correctImageUrl, {
-          status: 200,
-          headers: { 'Content-Type': 'text/plain' }
-        });
+        return res.status(200).send(correctImageUrl);
       }
     } catch (e) {
       console.error('Failed to parse JSON:', e);
     }
 
-    return new Response(responseText, {
-      status: response.status,
-      headers: response.headers
-    });
+    return res.status(response.status).send(responseText);
   } catch (error) {
     console.error('Error:', error);
-    return new Response('Internal Server Error', { status: 500 });
+    return res.status(500).send('Internal Server Error');
   }
 }
