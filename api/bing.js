@@ -5,8 +5,11 @@ export default async function handler(req, res) {
     // 根据 `cn` 参数决定 `mkt` 的值
     const mkt = isCN ? 'zh-CN' : 'en-US';
 
+    // 检查 `pic` 参数值，决定是否使用 4k 或 1k
+    const is4K = req.query.pic === '1k' ? '0' : '1';  // 默认为4k（uhd=1）
+
     // 必应壁纸API URL
-    const apiUrl = `https://bing.com/HPImageArchive.aspx?format=js&mkt=${mkt}&idx=0&n=1&uhd=1&uhdwidth=3840&uhdheight=2160`;
+    const apiUrl = `https://bing.com/HPImageArchive.aspx?format=js&mkt=${mkt}&idx=0&n=1&uhd=${is4K}&uhdwidth=3840&uhdheight=2160`;
 
     try {
         // 使用 fetch 获取API响应
