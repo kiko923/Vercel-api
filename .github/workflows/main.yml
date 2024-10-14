@@ -12,4 +12,4 @@ jobs:
     steps:
     - name: Call the API
       run: |
-        curl -X GET https://api.617636.xyz/api/upload
+        curl -X GET https://vercel-api-123.vercel.app/api/upload
