@@ -71,15 +71,20 @@ async function uploadImage(imageUrl, fileName) {
 // 主处理函数
 export default async function handler(req, res) {
     try {
-        // 获取1k图片链接
-        const imageUrl1k = await fetchImageUrl('1k');
-        const fileName1k = `${formattedDate}_1k`;
-        const location1k = await uploadImage(imageUrl1k, fileName1k);
+        // 获取1k和4k图片链接
+        const [imageUrl1k, imageUrl4k] = await Promise.all([
+            fetchImageUrl('1k'),
+            fetchImageUrl('4k')
+        ]);
 
-        // 获取4k图片链接
-        const imageUrl4k = await fetchImageUrl('4k');
+        const fileName1k = `${formattedDate}_1k`;
         const fileName4k = `${formattedDate}_4k`;
-        const location4k = await uploadImage(imageUrl4k, fileName4k);
+
+        // 并行上传1k和4k图片
+        const [location1k, location4k] = await Promise.all([
+            uploadImage(imageUrl1k, fileName1k),
+            uploadImage(imageUrl4k, fileName4k)
+        ]);
 
         res.status(200).json({
             message: 'Both images uploaded successfully',
