@@ -28,7 +28,7 @@ async function downloadImage(url, filePath) {
 
 async function fetchImageUrl(picType) {
     try {
-        const response = await axios.get(`https://api.617636.xyz/api/bing?pic=${picType}&type=json`);
+        const response = await axios.get(`https://vercel-api-123.vercel.app/api/bing?pic=${picType}&type=json`);
         if (response.data && response.data.code === 200) {
             return response.data.imageUrl;
         } else {
