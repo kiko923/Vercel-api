@@ -1,0 +1,15 @@
+name: Scheduled API Call
+
+on:
+  schedule:
+    # 使用 cron 语法设置每隔 6 小时触发一次
+    - cron: '0 */6 * * *'
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Call the API
+      run: |
+        curl -X GET https://api.617636.xyz/api/upload
