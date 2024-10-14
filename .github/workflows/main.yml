@@ -3,7 +3,7 @@ name: Scheduled API Call
 on:
   workflow_dispatch:  # 添加此行来启用手动触发
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 * * * *'  # 每小时的第0分钟执行
 
 jobs:
   call-api:
