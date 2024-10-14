@@ -1,13 +1,12 @@
 {
-  "name": "id_process_api",
+  "name": "cos_upload_api",
   "version": "1.0.0",
-  "main": "api/id_process.js",
+  "main": "api/upload.js",
   "dependencies": {
-    "express": "^4.17.1",
-    "cos-nodejs-sdk-v5": "^2.11.5",   // 替换为最新版本
-    "axios": "^0.27.2"               // 如果需要下载图片，可以添加 axios
+    "cos-nodejs-sdk-v5": "^2.11.5",
+    "axios": "^0.27.2"
   },
   "scripts": {
-    "start": "node api/id_process.js"
+    "start": "vercel dev"
   }
 }
