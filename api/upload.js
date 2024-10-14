@@ -9,7 +9,16 @@ const cos = new COS({
     SecretKey: process.env.COS_SECRET_KEY
 });
 
-const date = new Date();
+// 获取中国上海时间
+const getShanghaiDate = () => {
+    const date = new Date();
+    const utcOffset = date.getTimezoneOffset() * 60000; // 当前时区偏移时间
+    const shanghaiTime = new Date(date.getTime() + utcOffset + 8 * 3600000); // UTC+8 时区时间
+    return shanghaiTime;
+};
+
+// 格式化日期
+const date = getShanghaiDate();
 const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
 // 下载图片到临时文件
