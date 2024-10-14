@@ -1,8 +1,8 @@
 name: Scheduled API Call
 
 on:
+  workflow_dispatch:  # 添加此行来启用手动触发
   schedule:
-    # 使用 cron 语法设置每隔 6 小时触发一次
     - cron: '0 */6 * * *'
 
 jobs:
