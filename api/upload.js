@@ -1,42 +1,81 @@
-// upload.js
-const COS = require('cos-nodejs-sdk-v5');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+const axios = require('axios');
+const COS = require('cos-nodejs-sdk-v5');
 
 // 初始化 COS 客户端
 const cos = new COS({
-    SecretId: process.env.COS_SECRET_ID,  // 从环境变量中读取 SecretId
-    SecretKey: process.env.COS_SECRET_KEY // 从环境变量中读取 SecretKey
+    SecretId: process.env.COS_SECRET_ID,
+    SecretKey: process.env.COS_SECRET_KEY
 });
 
-// 获取当前日期，作为文件名
 const date = new Date();
-const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-  .toString()
-  .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+const localFilePath = path.resolve('/tmp', 'localImage.jpg'); // 将文件存储在 /tmp 目录
 
-// 本地图片路径，可以从某个地方获取图片
-const localFilePath = path.resolve(__dirname, 'localImage.jpg'); // 替换为你图片的实际路径
+// 下载图片到临时文件
+async function downloadImage(url, filePath) {
+    const response = await axios({
+        url,
+        responseType: 'stream'
+    });
 
-// 上传文件
-async function uploadImage() {
+    return new Promise((resolve, reject) => {
+        const stream = fs.createWriteStream(filePath);
+        response.data.pipe(stream);
+        stream.on('finish', () => resolve());
+        stream.on('error', reject);
+    });
+}
+
+// 从接口获取图片链接
+async function fetchImageUrl() {
     try {
-        const bucket = 'images-1300109351'; // 替换为你的存储桶名称
-        const key = `bingImg/${formattedDate}.jpg`; // 将文件名设为当前日期
-
-        // 上传文件到腾讯云 COS
-        const result = await cos.putObject({
-            Bucket: bucket,
-            Region: 'ap-guangzhou', // 替换为你存储桶的区域
-            Key: key,
-            Body: fs.createReadStream(localFilePath), // 从本地读取文件
-            ACL: 'public-read' // 可选，设置文件的访问权限为公开可读
-        });
-
-        console.log(`文件上传成功，访问地址为：${result.Location}`);
+        const response = await axios.get('https://api.617636.xyz/api/bing?pic=1k&type=json');
+        if (response.data && response.data.code === 200) {
+            return response.data.imageUrl; // 获取图片链接
+        } else {
+            throw new Error('Failed to fetch image URL from API');
+        }
     } catch (error) {
-        console.error(`文件上传失败：${error.message}`);
+        console.error('Error fetching image URL:', error);
+        throw error;
     }
 }
 
-module.exports = uploadImage;
+// 上传图片到腾讯云 COS
+async function uploadImage() {
+    const bucket = 'images-1300109351'; // 替换为你的Bucket名称
+    const key = `bingImg/${formattedDate}.jpg`; // 使用日期作为图片文件名
+
+    try {
+        // 从API获取图片链接
+        const imageUrl = await fetchImageUrl();
+
+        // 下载图片到 /tmp 目录
+        await downloadImage(imageUrl, localFilePath);
+
+        // 上传图片到 COS
+        const result = await cos.putObject({
+            Bucket: bucket,
+            Region: 'ap-guangzhou', // 替换为你的区域
+            Key: key,
+            Body: fs.createReadStream(localFilePath),
+            ACL: 'public-read' // 设置访问权限为公开
+        });
+
+        return result.Location;
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
+}
+
+export default async function handler(req, res) {
+    try {
+        const location = await uploadImage();
+        res.status(200).json({ message: 'File uploaded successfully', location });
+    } catch (error) {
+        res.status(500).json({ message: 'File upload failed', error: error.message });
+    }
+}
