@@ -97,7 +97,7 @@ export default async function handler(req, res) {
         // 检查 type 参数并返回不同的格式
         if (type === 'text') {
             const idNumbers = filteredIds.map(([idNumber]) => idNumber).join('\n');
-            res.status(200).send(idNumbers);
+            res.status(200).setHeader('Content-Type', 'text/plain').send(idNumbers);
         } else {
             const resultArray = filteredIds.map(([idNumber, name]) => ({ name, idCard: idNumber }));
             res.status(200).json({ code: 200, data: resultArray });
