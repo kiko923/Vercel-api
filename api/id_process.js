@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const { name, sfz, xb: xingbie } = req.method === 'POST' ? req.body : req.query;
+    const { name, sfz, xb: xingbie, type } = req.method === 'POST' ? req.body : req.query;
 
     // 校验传入参数
     if (!name || !sfz || !xingbie) {
@@ -94,8 +94,14 @@ export default async function handler(req, res) {
             return res.status(400).json({ code: 0, msg: '没有符合性别条件的身份证号码' });
         }
 
-        const resultArray = filteredIds.map(([idNumber, name]) => ({ name, idCard: idNumber }));
-        res.status(200).json({ code: 200, data: resultArray });
+        // 检查 type 参数并返回不同的格式
+        if (type === 'text') {
+            const idNumbers = filteredIds.map(([idNumber]) => idNumber).join('\n');
+            res.status(200).send(idNumbers);
+        } else {
+            const resultArray = filteredIds.map(([idNumber, name]) => ({ name, idCard: idNumber }));
+            res.status(200).json({ code: 200, data: resultArray });
+        }
     }
 
     // 调用处理函数
