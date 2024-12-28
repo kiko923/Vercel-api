@@ -3,8 +3,7 @@ name: Scheduled API Call
 on:
   workflow_dispatch:  # 保留此行以启用手动触发
   schedule:
-    - cron: '0 * * * *'  # 每1分钟执行一次
-
+    - cron: '*/5 * * * *'  # 每5分钟执行一次
 jobs:
   call-api:
     runs-on: ubuntu-latest
