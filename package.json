@@ -4,7 +4,8 @@
   "main": "api/upload.js",
   "dependencies": {
     "cos-nodejs-sdk-v5": "^2.11.5",
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "moment": "^2.30.1"
   },
   "scripts": {
     "start": "vercel dev"
