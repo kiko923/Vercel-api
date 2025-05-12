@@ -245,10 +245,3 @@ async function updateSteps(loginToken, appToken, steps) {
   }
 }
 
-// 导出函数
-module.exports = {
-  login,
-  getAppToken,
-  updateSteps
-};
-
